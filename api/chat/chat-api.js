@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, HTTP-Referer, X-Title');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
 
   // Handle preflight OPTIONS request
@@ -14,19 +14,22 @@ export default async function handler(req, res) {
   }
 
   const { prompt } = req.body;
-  const apiKey = process.env.PAWAN_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'API key not set' });
   }
   try {
-    const response = await fetch('https://api.pawan.krd/v1/chat/completions', {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        // Optionally add Referer and X-Title if you want
+        // 'HTTP-Referer': 'https://ai-scribe-ten.vercel.app',
+        // 'X-Title': 'Scribe.Ai',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'tngtech/deepseek-r1t2-chimera:free',
         messages: [{ role: 'user', content: prompt }]
       }),
     });
