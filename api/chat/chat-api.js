@@ -30,7 +30,10 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'tngtech/deepseek-r1t2-chimera:free',
-        messages: [{ role: 'user', content: prompt }]
+        messages: [
+          { role: 'system', content: 'You are an AI assistant. Always reply in English.' },
+          { role: 'user', content: prompt }
+        ]
       }),
     });
     const data = await response.json();
